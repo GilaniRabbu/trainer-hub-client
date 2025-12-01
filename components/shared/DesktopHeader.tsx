@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "next-themes";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/redux/slice/authSlice";
 import Logo from "./Logo";
@@ -39,11 +38,6 @@ import { useDispatch } from "react-redux";
 import { logout } from "@/redux/slice/authSlice";
 import { useRouter } from "next/navigation";
 import ContainerWrapper from "@/components/common/ContainerWrapper";
-
-interface Category {
-  name: string;
-  total: number;
-}
 
 interface IServiceProvider {
   _id: string;
@@ -55,8 +49,6 @@ interface IServiceProvider {
 }
 
 export default function DesktopHeader() {
-  const [categories, setCategories] = React.useState<Category[]>([]);
-  const [loading, setLoading] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
   const { setTheme, theme } = useTheme();
@@ -104,24 +96,6 @@ export default function DesktopHeader() {
   };
 
   React.useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASEURL}/service-providers/categories`,
-          { withCredentials: true }
-        );
-        setCategories(res.data.data);
-      } catch (err) {
-        console.error("Failed to fetch categories", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
@@ -157,7 +131,6 @@ export default function DesktopHeader() {
 
     window.addEventListener("resize", handleResize);
 
-    // Trigger once on mount
     handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
@@ -171,11 +144,23 @@ export default function DesktopHeader() {
     {
       title: "Services",
       href: "/service-providers",
-      items: categories.map((category) => ({
-        title: category.name,
-        href: `/service-providers/categories/${category.name}`,
-        description: `${category.total.toLocaleString()} Providers`,
-      })),
+      items: [
+        {
+          title: "Hire A Service Provider",
+          href: "/service-providers",
+          description: "Find and connect with verified professionals",
+        },
+        {
+          title: "Become A Service Provider",
+          href: "/signup",
+          description: "Join our platform and offer your services",
+        },
+        {
+          title: "Contact Support",
+          href: "/contact",
+          description: "Reach out with your queries, issues, or feedback",
+        },
+      ],
     },
     {
       title: "Actions",
@@ -209,60 +194,55 @@ export default function DesktopHeader() {
             <Logo />
           </div>
 
-          {/* Desktop Navigation */}
-          {loading ? (
-            <p>Loading Navigation...</p>
-          ) : (
-            <div className="flex flex-1 items-center justify-between space-x-2 md:justify-center">
-              <div className="w-full flex-1 md:w-auto md:flex-none">
-                <NavigationMenu className="hidden md:flex">
-                  <NavigationMenuList>
-                    {navigationItems.map((item) => (
-                      <NavigationMenuItem key={item.title}>
-                        {item.items ? (
-                          <>
-                            <NavigationMenuTrigger className="cursor-pointer bg-transparent">
-                              {item.title}
-                            </NavigationMenuTrigger>
-                            <NavigationMenuContent>
-                              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                                {item.items.map((subItem) => (
-                                  <li key={subItem.title}>
-                                    <NavigationMenuLink asChild>
-                                      <Link
-                                        href={subItem.href}
-                                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-primary hover:text-background"
-                                      >
-                                        <div className="font-bold leading-none">
-                                          {subItem.title}
-                                        </div>
-                                        <p className="line-clamp-2 text-sm leading-snug">
-                                          &#8226; {subItem.description}
-                                        </p>
-                                      </Link>
-                                    </NavigationMenuLink>
-                                  </li>
-                                ))}
-                              </ul>
-                            </NavigationMenuContent>
-                          </>
-                        ) : (
-                          <NavigationMenuLink asChild>
-                            <Link
-                              href={item.href}
-                              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-all data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-                            >
-                              {item.title}
-                            </Link>
-                          </NavigationMenuLink>
-                        )}
-                      </NavigationMenuItem>
-                    ))}
-                  </NavigationMenuList>
-                </NavigationMenu>
-              </div>
+          <div className="flex flex-1 items-center justify-between space-x-2 md:justify-center">
+            <div className="w-full flex-1 md:w-auto md:flex-none">
+              <NavigationMenu className="hidden md:flex">
+                <NavigationMenuList>
+                  {navigationItems.map((item) => (
+                    <NavigationMenuItem key={item.title}>
+                      {item.items ? (
+                        <>
+                          <NavigationMenuTrigger className="cursor-pointer bg-transparent">
+                            {item.title}
+                          </NavigationMenuTrigger>
+                          <NavigationMenuContent>
+                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                              {item.items.map((subItem) => (
+                                <li key={subItem.title}>
+                                  <NavigationMenuLink asChild>
+                                    <Link
+                                      href={subItem.href}
+                                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-primary hover:text-background"
+                                    >
+                                      <div className="font-bold leading-none">
+                                        {subItem.title}
+                                      </div>
+                                      <p className="line-clamp-2 text-sm leading-snug">
+                                        &#8226; {subItem.description}
+                                      </p>
+                                    </Link>
+                                  </NavigationMenuLink>
+                                </li>
+                              ))}
+                            </ul>
+                          </NavigationMenuContent>
+                        </>
+                      ) : (
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href={item.href}
+                            className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-all data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+                          >
+                            {item.title}
+                          </Link>
+                        </NavigationMenuLink>
+                      )}
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
             </div>
-          )}
+          </div>
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-2">
