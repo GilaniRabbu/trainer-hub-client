@@ -23,9 +23,7 @@ interface FormData {
 }
 
 export default function SignupForm() {
-  const [userType, setUserType] = useState<"CUSTOMER" | "SERVICE_PROVIDER">(
-    "CUSTOMER"
-  );
+  const [userType, setUserType] = useState<"USER" | "TRAINER">("USER");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -42,7 +40,7 @@ export default function SignupForm() {
     experienceYears: "",
     hourlyRate: 0,
     bio: "",
-    role: "CUSTOMER", // Initialize with default, will be updated dynamically
+    role: "USER", // Initialize with default, will be updated dynamically
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -76,7 +74,7 @@ export default function SignupForm() {
     }
 
     // Validate required provider fields
-    if (userType === "SERVICE_PROVIDER") {
+    if (userType === "TRAINER") {
       if (
         !formData.profession ||
         !formData.experienceYears ||
@@ -95,7 +93,7 @@ export default function SignupForm() {
         restData;
       let submissionData;
 
-      if (userType === "CUSTOMER") {
+      if (userType === "USER") {
         submissionData = customerData;
       } else {
         submissionData = {
@@ -145,9 +143,9 @@ export default function SignupForm() {
           <div className="mb-8">
             <div className="flex rounded-lg p-1 bg-gray-100 dark:bg-gray-700">
               <button
-                onClick={() => setUserType("CUSTOMER")}
+                onClick={() => setUserType("USER")}
                 className={`flex flex-1 items-center justify-center cursor-pointer text-sm font-medium px-4 py-3 rounded-md transition-all ${
-                  userType === "CUSTOMER"
+                  userType === "USER"
                     ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
                     : "text-gray-700 dark:text-gray-300 hover:text-gray-900 hover:dark:text-gray-100"
                 }`}
@@ -156,15 +154,15 @@ export default function SignupForm() {
                 Customer Registration
               </button>
               <button
-                onClick={() => setUserType("SERVICE_PROVIDER")}
+                onClick={() => setUserType("TRAINER")}
                 className={`flex flex-1 items-center justify-center cursor-pointer text-sm font-medium px-4 py-3 rounded-md transition-all ${
-                  userType === "SERVICE_PROVIDER"
+                  userType === "TRAINER"
                     ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
                     : "text-gray-700 dark:text-gray-300 hover:text-gray-900 hover:dark:text-gray-100"
                 }`}
               >
                 <Building2 className="w-4 h-4 mr-2" />
-                Service Provider
+                Trainer Registration
               </button>
             </div>
           </div>
@@ -311,7 +309,7 @@ export default function SignupForm() {
               />
             </div>
 
-            {userType === "SERVICE_PROVIDER" && (
+            {userType === "TRAINER" && (
               <>
                 <div className="grid grid-cols-1 gap-6">
                   <div>
@@ -324,7 +322,7 @@ export default function SignupForm() {
                     <select
                       id="profession"
                       name="profession"
-                      required={userType === "SERVICE_PROVIDER"}
+                      required={userType === "TRAINER"}
                       value={formData.profession}
                       onChange={handleChange}
                       className="cursor-pointer mt-1 block w-full border rounded-md px-3 py-2 outline-none bg-white dark:bg-slate-800"
@@ -349,7 +347,7 @@ export default function SignupForm() {
                     <select
                       id="experienceYears"
                       name="experienceYears"
-                      required={userType === "SERVICE_PROVIDER"}
+                      required={userType === "TRAINER"}
                       value={formData.experienceYears}
                       onChange={handleChange}
                       className="cursor-pointer mt-1 block w-full border rounded-md px-3 py-2 outline-none bg-white dark:bg-slate-800"
@@ -374,7 +372,7 @@ export default function SignupForm() {
                     id="hourlyRate"
                     name="hourlyRate"
                     type="number"
-                    required={userType === "SERVICE_PROVIDER"}
+                    required={userType === "TRAINER"}
                     min="0"
                     placeholder="e.g., 500"
                     value={formData.hourlyRate}
