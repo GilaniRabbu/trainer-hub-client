@@ -1,8 +1,8 @@
-/*eslint-disable*/
+/* eslint-disable */
 "use client";
 
-import { useState } from "react";
-import { Eye, EyeOff, User, Building2, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Eye, EyeOff, User, Building2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -16,18 +16,32 @@ interface FormData {
   confirmPassword: string;
   location: string;
   profession: string;
-  experienceYears: string;
+  experienceYears: number;
   hourlyRate: number;
   bio: string;
-  role: string;
+  role: "USER" | "TRAINER";
 }
+
+const VALID_PROFESSIONS = [
+  "Yoga Instructor",
+  "Fitness Instructor",
+  "Chiropractor",
+  "Athletic Trainer",
+  "Pilates Instructor",
+  "Personal Trainer",
+  "Meditation Coach",
+  "Nutrition Coach",
+  "Boxing Trainer",
+] as const;
 
 export default function SignupForm() {
   const [userType, setUserType] = useState<"USER" | "TRAINER">("USER");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -37,12 +51,16 @@ export default function SignupForm() {
     confirmPassword: "",
     location: "",
     profession: "",
-    experienceYears: "",
+    experienceYears: 0,
     hourlyRate: 0,
     bio: "",
-    role: "USER", // Initialize with default, will be updated dynamically
+    role: "USER",
   });
-  const [error, setError] = useState<string | null>(null);
+
+  // Sync role when user switches type
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, role: userType }));
+  }, [userType]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -50,11 +68,9 @@ export default function SignupForm() {
     >
   ) => {
     const { name, value, type } = e.target;
-
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "number" ? Number(value) : value,
-      role: userType,
+      [name]: type === "number" ? Number(value) || 0 : value,
     }));
   };
 
@@ -62,71 +78,95 @@ export default function SignupForm() {
     e.preventDefault();
     setError(null);
 
-    // Basic validation
+    // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError("Invalid password: Passwords do not match");
+      setError("Passwords do not match");
       return;
     }
-
     if (formData.password.length < 8) {
-      setError("Invalid password: Password must be at least 8 characters long");
+      setError("Password must be at least 8 characters");
       return;
     }
 
-    // Validate required provider fields
+    const required = [
+      "firstName",
+      "lastName",
+      "email",
+      "phone",
+      "location",
+    ] as const;
+    for (const field of required) {
+      if (!formData[field].trim()) {
+        setError(
+          `Please enter your ${field.replace(/([A-Z])/g, " $1").toLowerCase()}`
+        );
+        return;
+      }
+    }
+
     if (userType === "TRAINER") {
-      if (
-        !formData.profession ||
-        !formData.experienceYears ||
-        !formData.hourlyRate
-      ) {
-        setError("Please fill out all required provider fields");
+      if (!formData.profession) {
+        setError("Please select your profession");
+        return;
+      }
+      if (formData.experienceYears < 0) {
+        setError("Experience years cannot be negative");
+        return;
+      }
+      if (formData.hourlyRate <= 0) {
+        setError("Hourly rate must be greater than 0");
         return;
       }
     }
 
     try {
       setLoading(true);
-      // Prepare data for submission, excluding confirmPassword
-      const { confirmPassword, ...restData } = formData;
-      const { bio, profession, experienceYears, hourlyRate, ...customerData } =
-        restData;
-      let submissionData;
 
-      if (userType === "USER") {
-        submissionData = customerData;
-      } else {
-        submissionData = {
-          ...restData,
-          experienceYears: parseInt(experienceYears) || 0, // Convert experienceYears to number
-          hourlyRate: hourlyRate || 0, // Ensure hourlyRate is also a number
-        };
+      const submissionData: any = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        password: formData.password,
+        location: formData.location.trim(),
+        role: userType,
+      };
+
+      if (userType === "TRAINER") {
+        submissionData.profession = formData.profession;
+        submissionData.experienceYears = Number(formData.experienceYears);
+        submissionData.hourlyRate = Number(formData.hourlyRate);
+        submissionData.bio = formData.bio.trim() || undefined;
       }
+
+      console.log("Submit Data:", submissionData);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASEURL}/users/create`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(submissionData),
         }
       );
 
-      const responseData = await response.json();
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || "Signup failed");
+      }
 
-      if (responseData.success) {
-        toast.success("Account Created Successfully");
+      const data = await response.json();
+      if (data.success) {
+        toast.success("Account created successfully!");
         router.push("/login");
-        setLoading(false);
+      } else {
+        throw new Error(data.message || "Signup failed");
       }
     } catch (err: any) {
-      setLoading(false);
-      const errorMessage =
-        err.message || "An error occurred during signup. Please try again.";
-      setError(errorMessage);
       console.error("Signup error:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,321 +180,199 @@ export default function SignupForm() {
             </h1>
           </div>
 
+          {/* Role Toggle */}
           <div className="mb-8">
             <div className="flex rounded-lg p-1 bg-gray-100 dark:bg-gray-700">
               <button
+                type="button"
                 onClick={() => setUserType("USER")}
-                className={`flex flex-1 items-center justify-center cursor-pointer text-sm font-medium px-4 py-3 rounded-md transition-all ${
+                className={`flex flex-1 items-center justify-center gap-2 py-3 rounded-md font-medium transition-all ${
                   userType === "USER"
                     ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
-                    : "text-gray-700 dark:text-gray-300 hover:text-gray-900 hover:dark:text-gray-100"
+                    : "text-gray-600 dark:text-gray-400"
                 }`}
               >
-                <User className="w-4 h-4 mr-2" />
-                Customer Registration
+                <User className="w-4 h-4" /> Customer
               </button>
               <button
+                type="button"
                 onClick={() => setUserType("TRAINER")}
-                className={`flex flex-1 items-center justify-center cursor-pointer text-sm font-medium px-4 py-3 rounded-md transition-all ${
+                className={`flex flex-1 items-center justify-center gap-2 py-3 rounded-md font-medium transition-all ${
                   userType === "TRAINER"
                     ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
-                    : "text-gray-700 dark:text-gray-300 hover:text-gray-900 hover:dark:text-gray-100"
+                    : "text-gray-600 dark:text-gray-400"
                 }`}
               >
-                <Building2 className="w-4 h-4 mr-2" />
-                Trainer Registration
+                <Building2 className="w-4 h-4" /> Trainer
               </button>
             </div>
           </div>
 
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-medium"
-                >
-                  First Name *
-                </label>
-                <input
-                  id="firstName"
-                  name="firstName"
-                  type="text"
-                  required
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border rounded-md px-3 py-2 outline-none"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-medium">
-                  Last Name *
-                </label>
-                <input
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  required
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border rounded-md px-3 py-2 outline-none"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium">
-                Email Address *
-              </label>
+            <div className="grid grid-cols-2 gap-4">
               <input
-                id="email"
-                name="email"
-                type="email"
+                name="firstName"
+                placeholder="First Name"
+                value={formData.firstName}
+                onChange={handleChange}
                 required
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-1 block w-full border rounded-md px-3 py-2 outline-none"
+                className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
               />
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium">
-                Phone Number *
-              </label>
               <input
-                id="phone"
-                name="phone"
-                type="tel"
+                name="lastName"
+                placeholder="Last Name"
+                value={formData.lastName}
+                onChange={handleChange}
                 required
-                value={formData.phone}
-                onChange={handleChange}
-                className="mt-1 block w-full border rounded-md px-3 py-2 outline-none"
+                className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium">
-                  Password *
-                </label>
-                <div className="relative mt-1">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border rounded-md px-3 py-2 outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 cursor-pointer pr-3 flex items-center"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+            />
 
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium"
-                >
-                  Confirm Password *
-                </label>
-                <div className="relative mt-1">
-                  <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    required
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border rounded-md px-3 py-2 outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 cursor-pointer pr-3 flex items-center"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Phone Number"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+            />
 
-            <div>
-              <label htmlFor="location" className="block text-sm font-medium">
-                Location
-              </label>
+            <input
+              type="text"
+              name="location"
+              placeholder="City / Location"
+              value={formData.location}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+            />
+
+            {/* Password */}
+            <div className="relative">
               <input
-                id="location"
-                name="location"
-                type="text"
-                placeholder="City, State"
-                value={formData.location}
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={formData.password}
                 onChange={handleChange}
-                className="mt-1 block w-full border rounded-md px-3 py-2 outline-none"
+                required
+                className="w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-3.5 text-gray-500"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
 
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-3.5 text-gray-500"
+              >
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+
+            {/* Trainer Fields */}
             {userType === "TRAINER" && (
               <>
-                <div className="grid grid-cols-1 gap-6">
-                  <div>
-                    <label
-                      htmlFor="profession"
-                      className="block text-sm font-medium"
-                    >
-                      Profession *
-                    </label>
-                    <select
-                      id="profession"
-                      name="profession"
-                      required={userType === "TRAINER"}
-                      value={formData.profession}
-                      onChange={handleChange}
-                      className="cursor-pointer mt-1 block w-full border rounded-md px-3 py-2 outline-none bg-white dark:bg-slate-800"
-                    >
-                      <option value="">Select your profession</option>
-                      <option value="Electrician">Yoga Instructor</option>
-                      <option value="Plumber">Chiropractor</option>
-                      <option value="Painter">Athletic Trainer</option>
-                      <option value="Cleaner">Pilates Instructor</option>
-                      <option value="Mechanic">Personal Trainer</option>
-                      <option value="AC Repair">Meditation Coach</option>
-                    </select>
-                  </div>
+                <select
+                  name="profession"
+                  value={formData.profession}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none bg-white"
+                >
+                  <option value="">Select Your Profession</option>
+                  {VALID_PROFESSIONS.map((prof) => (
+                    <option key={prof} value={prof}>
+                      {prof}
+                    </option>
+                  ))}
+                </select>
 
-                  <div>
-                    <label
-                      htmlFor="experienceYears"
-                      className="block text-sm font-medium"
-                    >
-                      Years of Experience *
-                    </label>
-                    <select
-                      id="experienceYears"
-                      name="experienceYears"
-                      required={userType === "TRAINER"}
-                      value={formData.experienceYears}
-                      onChange={handleChange}
-                      className="cursor-pointer mt-1 block w-full border rounded-md px-3 py-2 outline-none bg-white dark:bg-slate-800"
-                    >
-                      <option value="">Select experience</option>
-                      <option value="0">0-1 years</option>
-                      <option value="2">2-5 years</option>
-                      <option value="6">6-10 years</option>
-                      <option value="10">10+ years</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="hourlyRate"
-                    className="block text-sm font-medium"
-                  >
-                    Hourly Rate (in BDT) *
-                  </label>
+                <div className="grid grid-cols-2 gap-4">
                   <input
-                    id="hourlyRate"
-                    name="hourlyRate"
                     type="number"
-                    required={userType === "TRAINER"}
-                    min="0"
-                    placeholder="e.g., 500"
-                    value={formData.hourlyRate}
+                    name="experienceYears"
+                    placeholder="Years of Experience"
+                    value={formData.experienceYears || ""}
                     onChange={handleChange}
-                    className="mt-1 block w-full border rounded-md px-3 py-2 outline-none"
+                    required
+                    min="0"
+                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+                  />
+                  <input
+                    type="number"
+                    name="hourlyRate"
+                    placeholder="Hourly Rate ($)"
+                    value={formData.hourlyRate || ""}
+                    onChange={handleChange}
+                    required
+                    min="1"
+                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="bio" className="block text-sm font-medium">
-                    Professional Bio
-                  </label>
-                  <textarea
-                    id="bio"
-                    name="bio"
-                    placeholder="Tell us about your experience and design philosophy..."
-                    value={formData.bio}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border rounded-md px-3 py-2 outline-none"
-                    rows={4}
-                  />
-                </div>
+                <textarea
+                  name="bio"
+                  placeholder="Short bio (optional)"
+                  value={formData.bio}
+                  onChange={handleChange}
+                  rows={4}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none resize-none"
+                />
               </>
             )}
-
-            {error && (
-              <div
-                className="border bg-red-100 border-red-400 text-red-700 relative px-4 py-3 mb-4 rounded"
-                role="alert"
-              >
-                <span className="block md:inline">{error}</span>
-              </div>
-            )}
-
-            <label
-              htmlFor="terms"
-              className="flex items-center space-x-2 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                id="terms"
-                className="peer hidden"
-                required
-              />
-              <div className="w-5 h-5 rounded flex items-center justify-center transition-colors border-2 border-label peer-checked:bg-label">
-                <Check className="w-4 h-4 text-white dark:text-slate-800" />
-              </div>
-              <p className="text-sm text-muted-foreground leading-5 cursor-pointer">
-                I agree to the{" "}
-                <Link href="/terms" className="text-label">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link href="/privacy" className="text-label">
-                  Privacy Policy
-                </Link>
-              </p>
-            </label>
 
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full cursor-pointer px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2
-                ${
-                  isLoading
-                    ? "bg-lime text-[#95FE8A] dark:text-[#202020] cursor-not-allowed"
-                    : "bg-lime text-[#71EE61] dark:text-[#121212] focus:ring-ring"
-                }
-              `}
+              className="w-full bg-[#008531] hover:bg-[#006d2a] text-white font-semibold py-4 rounded-lg transition-all disabled:opacity-70"
             >
               {isLoading ? "Creating Account..." : "Create Account"}
             </button>
-          </form>
 
-          <div className="text-center mt-4">
-            <p className="text-sm">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{" "}
-              <Link href="/login" className="font-medium text-label">
-                Login
+              <Link
+                href="/login"
+                className="text-[#008531] font-medium hover:underline"
+              >
+                Log in
               </Link>
             </p>
-          </div>
+          </form>
         </div>
       </div>
     </div>
