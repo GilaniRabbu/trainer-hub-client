@@ -88,23 +88,23 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative bg-gradient-to-b from-sky-200 via-white to-gray-100 dark:from-black dark:via-slate-900 dark:to-slate-800">
+    <section className="relative bg-gradient-to-b from-sky-200 via-background to-background dark:from-black dark:via-background dark:to-background">
       <div className="mx-auto w-full max-w-7xl px-5 py-14 md:px-10 md:py-18">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="inline-block mb-4 border border-black dark:border-white px-3 py-1 rounded-2xl">
+          <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-white/10 dark:text-white">
             Trusted by 10,000+ Client
-          </p>
-          <h1 className="mb-6 text-4xl font-bold md:text-6xl">
+          </span>
+          <h1 className="mb-6 mt-4 text-4xl font-bold md:text-6xl">
             Find the Perfect Personal Trainer Near You
           </h1>
-          <p className="mb-6 text-sm text-gray-500 sm:text-xl lg:mb-8">
+          <p className="mb-6 text-sm text-foreground sm:text-xl lg:mb-8">
             Get matched with skilled trainers for strength, weight loss,
             flexibility, or overall wellness—anytime, anywhere.
           </p>
 
           {/* Search Bar */}
           <div className="relative max-w-lg mx-auto" ref={containerRef}>
-            <div className="flex items-center gap-2 border rounded-xl px-3 py-3 bg-white dark:bg-slate-900 shadow-sm transition focus-within:ring-2 focus-within:ring-blue-500">
+            <div className="flex items-center gap-3 border rounded-xl px-3 py-3 bg-white dark:bg-slate-900 shadow-sm transition focus-within:ring-2 focus-within:ring-blue-500">
               <Search className="w-5 h-5 text-gray-400" />
               <input
                 type="text"
@@ -113,7 +113,7 @@ export default function Hero() {
                 placeholder="What service are you looking for?"
                 className="w-full bg-transparent outline-none text-sm md:text-base text-gray-800 dark:text-gray-200 placeholder-gray-400"
               />
-              <button className="px-3 py-1 cursor-pointer rounded-lg bg-black text-white">
+              <button className="px-4 py-1 cursor-pointer rounded-lg bg-foreground text-background">
                 Search
               </button>
             </div>
