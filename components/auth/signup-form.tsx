@@ -19,7 +19,7 @@ interface FormData {
   experienceYears: number;
   hourlyRate: number;
   bio: string;
-  role: "USER" | "TRAINER";
+  role: "USER" | "SERVICE_PROVIDER";
 }
 
 const VALID_PROFESSIONS = [
@@ -34,7 +34,7 @@ const VALID_PROFESSIONS = [
 ] as const;
 
 export default function SignupForm() {
-  const [userType, setUserType] = useState<"USER" | "TRAINER">("USER");
+  const [userType, setUserType] = useState<"USER" | "SERVICE_PROVIDER">("USER");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -103,7 +103,7 @@ export default function SignupForm() {
       }
     }
 
-    if (userType === "TRAINER") {
+    if (userType === "SERVICE_PROVIDER") {
       if (!formData.profession) {
         setError("Please select your profession");
         return;
@@ -131,7 +131,7 @@ export default function SignupForm() {
         role: userType,
       };
 
-      if (userType === "TRAINER") {
+      if (userType === "SERVICE_PROVIDER") {
         submissionData.profession = formData.profession;
         submissionData.experienceYears = Number(formData.experienceYears);
         submissionData.hourlyRate = Number(formData.hourlyRate);
@@ -195,14 +195,14 @@ export default function SignupForm() {
               </button>
               <button
                 type="button"
-                onClick={() => setUserType("TRAINER")}
+                onClick={() => setUserType("SERVICE_PROVIDER")}
                 className={`flex flex-1 items-center justify-center gap-2 py-3 rounded-md font-medium transition-all ${
-                  userType === "TRAINER"
+                  userType === "SERVICE_PROVIDER"
                     ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
                     : "text-gray-600 dark:text-gray-400"
                 }`}
               >
-                <Building2 className="w-4 h-4" /> Trainer
+                <Building2 className="w-4 h-4" /> SERVICE PROVIDER
               </button>
             </div>
           </div>
@@ -303,7 +303,7 @@ export default function SignupForm() {
             </div>
 
             {/* Trainer Fields */}
-            {userType === "TRAINER" && (
+            {userType === "SERVICE_PROVIDER" && (
               <>
                 <select
                   name="profession"
