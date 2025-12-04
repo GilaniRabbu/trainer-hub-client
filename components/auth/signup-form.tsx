@@ -23,15 +23,14 @@ interface FormData {
 }
 
 const VALID_PROFESSIONS = [
-  "Yoga Instructor",
   "Fitness Instructor",
+  "Yoga Instructor",
   "Chiropractor",
-  "Athletic Trainer",
-  "Pilates Instructor",
-  "Personal Trainer",
+  "Boxing Trainer",
+  "Dance Instructor",
+  "Singing Coach",
   "Meditation Coach",
   "Nutrition Coach",
-  "Boxing Trainer",
 ] as const;
 
 export default function SignupForm() {
