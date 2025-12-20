@@ -386,21 +386,21 @@ export default function DesktopHeader() {
                       key={provider._id}
                       className="p-4 border rounded-md transition"
                     >
-                      <p className="font-bold dark:text-[#202020]">
+                      <p className="font-bold">
                         {provider.firstName} {provider.lastName}
                       </p>
-                      <p className="text-sm text-muted-foreground dark:text-[#202020]">
+                      <p className="text-sm text-muted-foreground">
                         {provider.profession}
                       </p>
-                      <p className="text-sm text-muted-foreground dark:text-[#202020]">
+                      <p className="text-sm text-muted-foreground">
                         {provider.hourlyRate}
                       </p>
-                      <p className="text-sm text-muted-foreground dark:text-[#202020]">
+                      <p className="text-sm text-muted-foreground">
                         {provider.location}
                       </p>
                       <Link
                         href={`/service-providers/${provider._id}`}
-                        className="text-sm font-bold text-indigo-600 dark:text-slate-950 hover:underline"
+                        className="text-sm font-bold text-primary hover:underline"
                       >
                         Contact Provider
                       </Link>

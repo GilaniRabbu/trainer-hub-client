@@ -13,9 +13,9 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "Fast Fix",
+  title: "TrainerHub - ",
   description:
-    "Fast Fix helps you quickly find trusted service providers for any household task — from plumbing and cleaning to electrical repairs and more.",
+    "Find Trusted Service Providers Fast. Read Reviews, Compare Prices, and Book with Confidence on TrainerHub.",
 };
 
 export default function RootLayout({

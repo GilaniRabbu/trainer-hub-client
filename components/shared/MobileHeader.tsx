@@ -75,7 +75,7 @@ export default function MobileHeader({ closeSidebar }: MobileHeaderProps) {
             <Link
               href={item.href}
               onClick={closeSidebar}
-              className="block text-lg font-medium hover:text-foreground/80"
+              className="block text-lg font-medium"
             >
               {item.title}
             </Link>
@@ -86,7 +86,7 @@ export default function MobileHeader({ closeSidebar }: MobileHeaderProps) {
                     key={subItem.title}
                     href={subItem.href}
                     onClick={closeSidebar}
-                    className="block text-sm text-muted-foreground hover:text-foreground"
+                    className="block text-sm text-muted-foreground"
                   >
                     - {subItem.title}
                   </Link>

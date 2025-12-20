@@ -91,7 +91,7 @@ export default function Hero() {
     <section className="relative bg-gradient-to-b from-sky-200 via-background to-background dark:from-black dark:via-background dark:to-background">
       <div className="mx-auto w-full max-w-7xl px-5 py-14 md:px-10 md:py-18">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-white/10 dark:text-white">
+          <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium backdrop-blur-lg bg-gray-100/50 text-gray-800 dark:bg-white/10 dark:text-white">
             Trusted by 10,000+ Client
           </span>
           <h1 className="mb-6 mt-4 text-4xl font-bold md:text-6xl">
