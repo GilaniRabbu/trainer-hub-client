@@ -172,22 +172,22 @@ export default function SignupForm() {
   return (
     <div className="py-12 md:py-16 lg:py-20">
       <div className="max-w-xl w-full mx-auto px-4 md:px-6 lg:px-8">
-        <div className="p-8 rounded-xl shadow bg-white dark:bg-slate-800">
+        <div className="p-8 rounded-xl shadow bg-gray-50 dark:bg-gray-900">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-[#008531] dark:text-[#71EE61]">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
               Create Your Account
             </h1>
           </div>
 
           {/* Role Toggle */}
           <div className="mb-8">
-            <div className="flex rounded-lg p-1 bg-gray-100 dark:bg-gray-700">
+            <div className="flex rounded-lg p-1 bg-gray-100 dark:bg-gray-800">
               <button
                 type="button"
                 onClick={() => setUserType("USER")}
                 className={`flex flex-1 items-center justify-center gap-2 py-3 rounded-md font-medium transition-all ${
                   userType === "USER"
-                    ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
+                    ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
                     : "text-gray-600 dark:text-gray-400"
                 }`}
               >
@@ -198,7 +198,7 @@ export default function SignupForm() {
                 onClick={() => setUserType("SERVICE_PROVIDER")}
                 className={`flex flex-1 items-center justify-center gap-2 py-3 rounded-md font-medium transition-all ${
                   userType === "SERVICE_PROVIDER"
-                    ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
+                    ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
                     : "text-gray-600 dark:text-gray-400"
                 }`}
               >
@@ -208,7 +208,7 @@ export default function SignupForm() {
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-lg text-sm">
+            <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-300 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -221,7 +221,11 @@ export default function SignupForm() {
                 value={formData.firstName}
                 onChange={handleChange}
                 required
-                className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+                className="px-4 py-3 rounded-lg outline-none
+              bg-white dark:bg-gray-800
+              border border-gray-300 dark:border-gray-700
+              text-gray-900 dark:text-gray-100
+              focus:ring-2 focus:ring-gray-500"
               />
               <input
                 name="lastName"
@@ -229,7 +233,11 @@ export default function SignupForm() {
                 value={formData.lastName}
                 onChange={handleChange}
                 required
-                className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+                className="px-4 py-3 rounded-lg outline-none
+              bg-white dark:bg-gray-800
+              border border-gray-300 dark:border-gray-700
+              text-gray-900 dark:text-gray-100
+              focus:ring-2 focus:ring-gray-500"
               />
             </div>
 
@@ -240,7 +248,11 @@ export default function SignupForm() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+              className="w-full px-4 py-3 rounded-lg outline-none
+            bg-white dark:bg-gray-800
+            border border-gray-300 dark:border-gray-700
+            text-gray-900 dark:text-gray-100
+            focus:ring-2 focus:ring-gray-500"
             />
 
             <input
@@ -250,7 +262,11 @@ export default function SignupForm() {
               value={formData.phone}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+              className="w-full px-4 py-3 rounded-lg outline-none
+            bg-white dark:bg-gray-800
+            border border-gray-300 dark:border-gray-700
+            text-gray-900 dark:text-gray-100
+            focus:ring-2 focus:ring-gray-500"
             />
 
             <input
@@ -260,7 +276,11 @@ export default function SignupForm() {
               value={formData.location}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+              className="w-full px-4 py-3 rounded-lg outline-none
+            bg-white dark:bg-gray-800
+            border border-gray-300 dark:border-gray-700
+            text-gray-900 dark:text-gray-100
+            focus:ring-2 focus:ring-gray-500"
             />
 
             {/* Password */}
@@ -272,12 +292,16 @@ export default function SignupForm() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+                className="w-full px-4 py-3 pr-12 rounded-lg outline-none
+              bg-white dark:bg-gray-800
+              border border-gray-300 dark:border-gray-700
+              text-gray-900 dark:text-gray-100
+              focus:ring-2 focus:ring-gray-500"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3.5 text-gray-500"
+                className="absolute right-3 top-3.5 text-gray-500 dark:text-gray-400"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -291,12 +315,16 @@ export default function SignupForm() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+                className="w-full px-4 py-3 pr-12 rounded-lg outline-none
+              bg-white dark:bg-gray-800
+              border border-gray-300 dark:border-gray-700
+              text-gray-900 dark:text-gray-100
+              focus:ring-2 focus:ring-gray-500"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-3.5 text-gray-500"
+                className="absolute right-3 top-3.5 text-gray-500 dark:text-gray-400"
               >
                 {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -310,7 +338,11 @@ export default function SignupForm() {
                   value={formData.profession}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none bg-white"
+                  className="w-full px-4 py-3 rounded-lg outline-none
+                bg-white dark:bg-gray-800
+                border border-gray-300 dark:border-gray-700
+                text-gray-900 dark:text-gray-100
+                focus:ring-2 focus:ring-gray-500"
                 >
                   <option value="">Select Your Profession</option>
                   {VALID_PROFESSIONS.map((prof) => (
@@ -329,7 +361,11 @@ export default function SignupForm() {
                     onChange={handleChange}
                     required
                     min="0"
-                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+                    className="px-4 py-3 rounded-lg outline-none
+                  bg-white dark:bg-gray-800
+                  border border-gray-300 dark:border-gray-700
+                  text-gray-900 dark:text-gray-100
+                  focus:ring-2 focus:ring-gray-500"
                   />
                   <input
                     type="number"
@@ -339,7 +375,11 @@ export default function SignupForm() {
                     onChange={handleChange}
                     required
                     min="1"
-                    className="px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none"
+                    className="px-4 py-3 rounded-lg outline-none
+                  bg-white dark:bg-gray-800
+                  border border-gray-300 dark:border-gray-700
+                  text-gray-900 dark:text-gray-100
+                  focus:ring-2 focus:ring-gray-500"
                   />
                 </div>
 
@@ -349,7 +389,11 @@ export default function SignupForm() {
                   value={formData.bio}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#008531] outline-none resize-none"
+                  className="w-full px-4 py-3 rounded-lg outline-none resize-none
+                bg-white dark:bg-gray-800
+                border border-gray-300 dark:border-gray-700
+                text-gray-900 dark:text-gray-100
+                focus:ring-2 focus:ring-gray-500"
                 />
               </>
             )}
@@ -357,7 +401,10 @@ export default function SignupForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#008531] hover:bg-[#006d2a] text-white font-semibold py-4 rounded-lg transition-all disabled:opacity-70"
+              className="w-full py-4 rounded-lg font-semibold transition-all
+            bg-gray-900 text-gray-100 hover:bg-gray-800
+            dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200
+            disabled:opacity-70"
             >
               {isLoading ? "Creating Account..." : "Create Account"}
             </button>
@@ -366,7 +413,7 @@ export default function SignupForm() {
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="text-[#008531] font-medium hover:underline"
+                className="font-medium text-gray-900 dark:text-gray-100 hover:underline"
               >
                 Log in
               </Link>

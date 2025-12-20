@@ -13,7 +13,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "TrainerHub - ",
+  title: "TrainerHub",
   description:
     "Find Trusted Service Providers Fast. Read Reviews, Compare Prices, and Book with Confidence on TrainerHub.",
 };
