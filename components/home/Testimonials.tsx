@@ -6,22 +6,22 @@ import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 
 const testimonials = [
   {
-    name: "Sarah Khan",
-    title: "Freelance Designer",
+    name: "Nabila Islam",
+    title: "Meditation Student",
     quote:
-      "The platform helped me find a reliable handyman within minutes. Excellent user experience and trustworthy service providers!",
+      "The meditation coach I hired helped me manage stress and build a daily mindfulness habit. The experience was seamless.",
   },
   {
-    name: "Ahmed Hossain",
-    title: "Interior Designer",
+    name: "Rafi Chowdhury",
+    title: "Nutrition Client",
     quote:
-      "Booking a plumber was easier than ever. Transparent reviews and instant communication made the process hassle-free.",
+      "Working with a nutrition coach transformed my eating habits. The platform made it easy to find certified professionals.",
   },
   {
-    name: "Tania Rahman",
-    title: "Architectural Designer",
+    name: "Mithila Roy",
+    title: "Dance Learner",
     quote:
-      "FastFix saved me time and stress. I hired a cleaning team quickly and easily. Highly recommend it!",
+      "I found an amazing dance instructor who matched my learning style perfectly. Booking and communication were effortless.",
   },
 ];
 

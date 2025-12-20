@@ -20,7 +20,7 @@ const Footer = () => {
   const contactInfo = [
     { href: "#", label: "123 Main Street, Downtown" },
     { href: "#", label: "+880 123-456-789" },
-    { href: "#", label: "support@fastfix.com" },
+    { href: "#", label: "support@trainerhub.com" },
   ];
 
   return (
@@ -29,11 +29,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-8 mb-10">
           {/* Logo and Contact Info */}
           <div className="lg:w-4/5">
-            <h2 className="text-lg font-semibold mb-4">FastFix</h2>
+            <h2 className="text-lg font-semibold mb-4">TrainerHub</h2>
             <p className="text-sm text-muted-foreground">
-              FastFix connects you with trusted electricians, plumbers,
-              cleaners, and other local experts. Get reliable help for your home
-              and office needs — quickly and easily.
+              TrainerHub connects you with certified personal trainers, yoga
+              instructors, nutrition coaches, and wellness experts. Find the
+              right coach for your fitness, health, and lifestyle goals —
+              anytime, anywhere.
             </p>
           </div>
 
@@ -69,7 +70,7 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="pt-5 border-t">
           <p className="text-sm text-center">
-            © 2025 FastFix. All Rights Reserved.
+            © 2025 TrainerHub. All Rights Reserved.
           </p>
         </div>
       </div>
