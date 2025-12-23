@@ -37,7 +37,7 @@ export default function HowItWorks() {
       {/* Header */}
       <div className="text-center mb-16 space-y-4">
         <h2 className="text-3xl md:text-4xl font-bold text-primary">
-          How FastFix Works
+          How TrainerHub Works
         </h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Get professional home services in just a few simple steps. It&apos;s
