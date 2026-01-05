@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/redux/slice/authSlice";
+import { MdOutlineChevronRight } from "react-icons/md";
 
 interface MobileHeaderProps {
   closeSidebar: () => void;
@@ -68,27 +68,27 @@ export default function MobileHeader({ closeSidebar }: MobileHeaderProps) {
   ];
 
   return (
-    <div className="flex flex-col space-y-3">
-      <div className="flex flex-col space-y-3 pb-3">
+    <div className="flex flex-col space-y-2 px-4">
+      <div className="flex flex-col space-y-4 pb-2">
         {navigationItems.map((item) => (
           <div key={item.title}>
             <Link
               href={item.href}
               onClick={closeSidebar}
-              className="block text-lg font-medium"
+              className="block text-lg font-medium border-b pb-1"
             >
               {item.title}
             </Link>
             {item.items && (
-              <div className="ml-2 flex flex-col space-y-1">
+              <div className="flex flex-col space-y-2 mt-3">
                 {item.items.map((subItem) => (
                   <Link
                     key={subItem.title}
                     href={subItem.href}
                     onClick={closeSidebar}
-                    className="block text-sm text-muted-foreground"
+                    className="inline-flex items-center gap-1 text-sm text-muted-foreground border-b pl-3 pb-2"
                   >
-                    - {subItem.title}
+                    <MdOutlineChevronRight /> {subItem.title}
                   </Link>
                 ))}
               </div>

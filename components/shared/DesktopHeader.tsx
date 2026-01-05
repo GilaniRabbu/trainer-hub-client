@@ -302,7 +302,7 @@ export default function DesktopHeader() {
                     <span className="sr-only">Close menu</span>
                   </Button>
                 </div>
-                <div className="px-4 py-2">
+                <div>
                   <MobileHeader closeSidebar={() => setOpen(false)} />
                 </div>
               </SheetContent>
@@ -329,32 +329,32 @@ export default function DesktopHeader() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsOpen(!isOpen)}
-                  className="flex cursor-pointer items-center justify-center size-10 rounded-full bg-gray-100 dark:bg-slate-700 hover:bg-gray-200"
+                  className="flex cursor-pointer items-center justify-center size-10 rounded-full bg-gray-100 dark:bg-slate-700 hover:opacity-85 transition-all"
                 >
                   <User className="w-4 h-4" />
                 </button>
                 {isOpen && (
                   <div className="absolute right-0 z-50 pt-3">
-                    <div className="w-40 shadow-md rounded-md overflow-hidden bg-white">
+                    <div className="w-40 shadow-md rounded-b-md overflow-hidden bg-gray-100 dark:bg-slate-800">
                       <Link
                         href="/user/dashboard"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:opacity-85"
                       >
-                        <LayoutDashboard className="h-4 w-4 text-gray-500" />
+                        <LayoutDashboard className="h-4 w-4 text-gray-700 dark:text-gray-300" />
                         Dashboard
                       </Link>
                       <Link
                         href="/user/settings"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:opacity-85"
                       >
-                        <Settings className="h-4 w-4 text-gray-500" />
+                        <Settings className="h-4 w-4 text-gray-700 dark:text-gray-300" />
                         Settings
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full cursor-pointer text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="w-full cursor-pointer text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:opacity-85"
                       >
-                        <LogOut className="h-4 w-4 text-red-500" />
+                        <LogOut className="h-4 w-4 text-red-600 dark:text-red-500" />
                         Logout
                       </button>
                     </div>
